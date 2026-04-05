@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leen Abdel Halim — AI Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #050810;
+    --bg2: #0a0f1e;
+    --bg3: #0f1628;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: rgba(99,179,237,0.15);
+    --border2: rgba(99,179,237,0.3);
+    --cyan: #63b3ed;
+    --cyan2: #90cdf4;
+    --cyan3: #bee3f8;
+    --purple: #9f7aea;
+    --purple2: #b794f4;
+    --green: #68d391;
+    --amber: #f6ad55;
+    --text: #e2e8f0;
+    --text2: #a0aec0;
+    --text3: #718096;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* CANVAS PARTICLE BG */
+  #particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5,8,16,0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    color: var(--text2);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    font-family: var(--mono);
+  }
+
+  .nav-links a:hover { color: var(--cyan); }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    background: rgba(99,179,237,0.05);
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .hero-name {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e2e8f0 0%, #63b3ed 50%, #9f7aea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+  }
+
+  /* TAGLINE SWITCHER */
+  .tagline-switcher {
+    margin-bottom: 2rem;
+  }
+
+  .tagline-tabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tagline-tab {
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .tagline-tab.active, .tagline-tab:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(99,179,237,0.08);
+  }
+
+  .tagline-display {
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    color: var(--text2);
+    min-height: 2.5rem;
+    transition: opacity 0.3s;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .tagline-display span {
+    color: var(--cyan2);
+    font-weight: 500;
+  }
+
+  .hero-summary {
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    color: var(--text3);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 100%);
+    color: #050810;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-secondary {
+    padding: 0.75rem 2rem;
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { background: rgba(99,179,237,0.08); }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    color: var(--cyan);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text2);
+    margin-bottom: 1.2rem;
+    line-height: 1.9;
+    font-size: 0.95rem;
+  }
+
+  .about-text .highlight {
+    color: var(--cyan2);
+    font-weight: 500;
+  }
+
+  .about-text .tech-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    background: rgba(159,122,234,0.1);
+    border: 1px solid rgba(159,122,234,0.3);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--purple2);
+    margin: 0.15rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border2); }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  /* SKILLS */
+  #skills {
+    padding: 6rem 2rem;
+    background: var(--bg2);
+  }
+
+  .skills-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .skill-category:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .skill-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-cat-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .skill-cat-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    border: 1px solid;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .skill-tag:hover { transform: scale(1.05); }
+
+  .tag-cyan { color: var(--cyan); border-color: rgba(99,179,237,0.3); background: rgba(99,179,237,0.05); }
+  .tag-purple { color: var(--purple2); border-color: rgba(159,122,234,0.3); background: rgba(159,122,234,0.05); }
+  .tag-green { color: var(--green); border-color: rgba(104,211,145,0.3); background: rgba(104,211,145,0.05); }
+  .tag-amber { color: var(--amber); border-color: rgba(246,173,85,0.3); background: rgba(246,173,85,0.05); }
+
+  /* PROJECTS */
+  #projects {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.3s;
+    cursor: pointer;
+  }
+
+  .project-card:hover { border-color: var(--border2); }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .project-title-group { flex: 1; }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.3rem;
+  }
+
+  .project-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-award { background: rgba(246,173,85,0.15); color: var(--amber); border: 1px solid rgba(246,173,85,0.3); }
+  .badge-prod { background: rgba(104,211,145,0.1); color: var(--green); border: 1px solid rgba(104,211,145,0.25); }
+  .badge-research { background: rgba(159,122,234,0.1); color: var(--purple2); border: 1px solid rgba(159,122,234,0.25); }
+
+  .star-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .star-item {}
+
+  .star-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .star-text {
+    font-size: 0.87rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .tech-chip {
+    padding: 0.2rem 0.55rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text3);
+  }
+
+  /* AWARDS */
+  #awards {
+    padding: 6rem 2rem;
+    background: var(--bg2);
+  }
+
+  .awards-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .awards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .award-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .award-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .award-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .award-card:hover::before { opacity: 1; }
+
+  .award-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .award-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .award-org {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--cyan);
+    margin-bottom: 0.6rem;
+  }
+
+  .award-desc {
+    font-size: 0.85rem;
+    color: var(--text3);
+    line-height: 1.6;
+  }
+
+  /* EXPERIENCE TIMELINE */
+  #experience {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 2.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -2.4rem;
+    top: 0.3rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--cyan);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 3px rgba(99,179,237,0.15);
+  }
+
+  .timeline-period {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text3);
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-role {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+  }
+
+  .timeline-company {
+    font-size: 0.85rem;
+    color: var(--cyan);
+    margin-bottom: 0.6rem;
+    font-family: var(--mono);
+  }
+
+  .timeline-desc {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: 6rem 2rem;
+    text-align: center;
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .contact-sub {
+    color: var(--text3);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    background: var(--surface);
+    font-family: var(--mono);
+  }
+
+  .contact-link:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(99,179,237,0.05);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 1.5rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text3);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo">leen.abdel-halim / <span style="color:var(--purple2)">ai-engineer</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#awards">awards</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Available for opportunities — AI Engineering</div>
+    <h1 class="hero-name">Leen Abdel Halim</h1>
+
+    <div class="tagline-switcher">
+      <div class="tagline-tabs">
+        <button class="tagline-tab active" data-idx="0">Agentic AI</button>
+        <button class="tagline-tab" data-idx="1">RAG Systems</button>
+        <button class="tagline-tab" data-idx="2">Sign Language</button>
+      </div>
+      <div class="tagline-display" id="tagline-text"></div>
+    </div>
+
+    <p class="hero-summary">
+      AI Engineer & Data Scientist bridging rigorous research with production-grade systems.
+      Specializing in multi-agent orchestration, semantic retrieval architectures, and applied deep learning
+      at the frontier of what's deployable.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#contact" class="btn-secondary">Get in Touch</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-num">01 //</span>
+    <h2 class="section-title">Professional Narrative</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I am an <span class="highlight">AI Engineer transitioning from a strong Data Science foundation</span> into
+        the frontier of Generative AI and Agentic Workflows. My academic background in Data Science from
+        Al-Balqa' Applied University gave me the quantitative rigor to understand systems deeply —
+        my professional path has been about engineering them at scale.
+      </p>
+      <p>
+        At <span class="highlight">Leading Point Software</span>, I work at the intersection of research and production,
+        building Multi-RAG platforms with <span class="tech-tag">Haystack 2.0</span> and <span class="tech-tag">Unstructured.io</span>
+        that ingest heterogeneous document corpora, apply semantic chunking strategies, and serve sub-100ms
+        retrieval through <span class="tech-tag">Qdrant</span> vector databases. I'm not just fine-tuning prompts —
+        I'm designing ETL pipelines that transform raw enterprise data into queryable knowledge graphs.
+      </p>
+      <p>
+        My philosophy: <span class="highlight">research-level AI belongs in production</span>. I bring deep familiarity
+        with the LangChain and LlamaIndex ecosystems, vision-language model research, and a track record
+        of building systems that win competitions and solve real problems.
+      </p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">1st</div>
+        <div class="stat-label">P2M Innovation Competition</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">6th</div>
+        <div class="stat-label">NASA Space Apps (Global)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">RAG Architectures Shipped</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">VLM</div>
+        <div class="stat-label">Active Research Track</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-inner">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Technical Stack</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-category">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon" style="background:rgba(99,179,237,0.1);">⚡</div>
+          <div class="skill-cat-title">GenAI & LLMs</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag tag-cyan">LangChain</span>
+          <span class="skill-tag tag-cyan">LlamaIndex</span>
+          <span class="skill-tag tag-cyan">Haystack 2.0</span>
+          <span class="skill-tag tag-cyan">Hugging Face</span>
+          <span class="skill-tag tag-cyan">Qdrant</span>
+          <span class="skill-tag tag-cyan">RAG Pipelines</span>
+          <span class="skill-tag tag-cyan">BGE-Reranker</span>
+          <span class="skill-tag tag-cyan">Prompt Engineering</span>
+          <span class="skill-tag tag-cyan">Unstructured.io</span>
+          <span class="skill-tag tag-cyan">Agentic Workflows</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon" style="background:rgba(159,122,234,0.1);">🧠</div>
+          <div class="skill-cat-title">ML & Deep Learning</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag tag-purple">PyTorch</span>
+          <span class="skill-tag tag-purple">TensorFlow</span>
+          <span class="skill-tag tag-purple">YOLOv8</span>
+          <span class="skill-tag tag-purple">VLM Research</span>
+          <span class="skill-tag tag-purple">Computer Vision</span>
+          <span class="skill-tag tag-purple">NLP Pipelines</span>
+          <span class="skill-tag tag-purple">Transformer Models</span>
+          <span class="skill-tag tag-purple">Scikit-Learn</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon" style="background:rgba(104,211,145,0.1);">☁️</div>
+          <div class="skill-cat-title">Cloud & MLOps (AWS)</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag tag-green">AWS SageMaker</span>
+          <span class="skill-tag tag-green">Docker</span>
+          <span class="skill-tag tag-green">FastAPI</span>
+          <span class="skill-tag tag-green">Model Serving</span>
+          <span class="skill-tag tag-green">CI/CD Pipelines</span>
+          <span class="skill-tag tag-green">Git / GitHub</span>
+          <span class="skill-tag tag-green">Weights & Biases</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon" style="background:rgba(246,173,85,0.1);">🔧</div>
+          <div class="skill-cat-title">Data Engineering</div>
+        </div>
+        <div class="skill-tags">
+          <span class="skill-tag tag-amber">Python</span>
+          <span class="skill-tag tag-amber">SQL / PostgreSQL</span>
+          <span class="skill-tag tag-amber">ETL Design</span>
+          <span class="skill-tag tag-amber">Vector Indexing</span>
+          <span class="skill-tag tag-amber">Pandas / NumPy</span>
+          <span class="skill-tag tag-amber">Data Pipelines</span>
+          <span class="skill-tag tag-amber">Semantic Chunking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-num">03 //</span>
+    <h2 class="section-title">Project Showcases</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-list">
+
+    <!-- Project 1 -->
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title-group">
+          <div class="project-num">PROJECT_01</div>
+          <div class="project-title">Multi-Source Autonomous RAG Platform</div>
+          <div class="project-badges">
+            <span class="badge badge-prod">Production</span>
+            <span class="badge badge-research">Agentic</span>
+          </div>
+        </div>
+      </div>
+      <div class="star-grid">
+        <div class="star-item">
+          <div class="star-label">Situation</div>
+          <div class="star-text">Enterprise clients required intelligent Q&A over heterogeneous document corpora — PDFs, CSVs, HTML tables, and structured databases — with no unified retrieval layer.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Task</div>
+          <div class="star-text">Architect a multi-source RAG pipeline capable of autonomous document routing, semantic reranking, and persona-adaptive response generation at sub-200ms latency.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Action</div>
+          <div class="star-text">Designed an ingestion pipeline using Unstructured.io + Haystack 2.0 for document parsing. Implemented hybrid retrieval (BM25 + dense vectors) in Qdrant with BGE-Reranker cross-encoder scoring. Built a dynamic AI Persona layer that tailors tone, depth, and citation style per user role.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Result</div>
+          <div class="star-text">Achieved 94% retrieval precision@5 on internal benchmarks. Persona generation reduced user follow-up queries by 38%. Platform now processes 50K+ documents across 6 enterprise clients.</div>
+        </div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">Haystack 2.0</span>
+        <span class="tech-chip">Qdrant</span>
+        <span class="tech-chip">BGE-Reranker</span>
+        <span class="tech-chip">Unstructured.io</span>
+        <span class="tech-chip">LangChain Agents</span>
+        <span class="tech-chip">FastAPI</span>
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">AWS S3</span>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title-group">
+          <div class="project-num">PROJECT_02</div>
+          <div class="project-title">Sign2Sign — YOLO to 3D Avatar Evolution</div>
+          <div class="project-badges">
+            <span class="badge badge-award">🥇 1st Place P2M</span>
+            <span class="badge badge-research">R&D</span>
+          </div>
+        </div>
+      </div>
+      <div class="star-grid">
+        <div class="star-item">
+          <div class="star-label">Situation</div>
+          <div class="star-text">The deaf and hard-of-hearing community in the Arab world lacked real-time, bidirectional sign language translation tools — existing solutions were static, non-interactive, and not culturally adapted to Arabic Sign Language (ArSL).</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Task</div>
+          <div class="star-text">Build an end-to-end bidirectional sign language translation system capable of both recognizing signs from live video and generating them through an animated avatar.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Action</div>
+          <div class="star-text">Trained a custom YOLOv8 model on a curated ArSL gesture dataset with real-time landmark extraction via MediaPipe. Achieved 91% gesture classification accuracy. Currently extending to 3D avatar rendering using skeletal animation pipelines, mapping predicted pose tensors to rigged character meshes for photorealistic sign output.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Result</div>
+          <div class="star-text">Won 1st place at the P2M Innovation Competition. Ongoing R&D on avatar rendering represents a step change from 2D overlays to embodied, expressive sign generation — with patent potential.</div>
+        </div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">YOLOv8</span>
+        <span class="tech-chip">MediaPipe</span>
+        <span class="tech-chip">PyTorch</span>
+        <span class="tech-chip">3D Avatar Rendering</span>
+        <span class="tech-chip">Skeletal Animation</span>
+        <span class="tech-chip">ArSL Dataset</span>
+        <span class="tech-chip">OpenCV</span>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title-group">
+          <div class="project-num">PROJECT_03</div>
+          <div class="project-title">NASA Space Apps — Exoplanet Identification via ML</div>
+          <div class="project-badges">
+            <span class="badge badge-award">🚀 6th Global</span>
+            <span class="badge badge-research">Astrophysics ML</span>
+          </div>
+        </div>
+      </div>
+      <div class="star-grid">
+        <div class="star-item">
+          <div class="star-label">Situation</div>
+          <div class="star-text">NASA's Kepler/TESS datasets contain thousands of unvalidated planetary transit signals. Manual vetting by astronomers is a severe bottleneck — false positives (eclipsing binaries, instrumental artifacts) pollute candidate pools.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Task</div>
+          <div class="star-text">Design a multi-source ML classifier that distinguishes genuine exoplanet transits from astrophysical false positives using heterogeneous time-series, spectral, and centroid data.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Action</div>
+          <div class="star-text">Built a multi-modal ML pipeline fusing light curve time-series (1D-CNN), stellar metadata (gradient boosted features), and centroid shift analysis. Applied ensemble voting across models trained on NASA's cumulative KOI catalog. Implemented data augmentation via synthetic transit injection to address severe class imbalance.</div>
+        </div>
+        <div class="star-item">
+          <div class="star-label">Result</div>
+          <div class="star-text">Achieved 89.4% validation accuracy on held-out KOI candidates. Ranked 6th globally at NASA Space Apps Challenge 2023, competing against 1,000+ teams across 160 countries.</div>
+        </div>
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">1D-CNN</span>
+        <span class="tech-chip">Gradient Boosting</span>
+        <span class="tech-chip">Ensemble Methods</span>
+        <span class="tech-chip">NASA KOI Catalog</span>
+        <span class="tech-chip">TensorFlow</span>
+        <span class="tech-chip">Time-Series Analysis</span>
+        <span class="tech-chip">Python</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <span class="section-num">04 //</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-period">2024 — Present</div>
+      <div class="timeline-role">Machine Learning Trainee</div>
+      <div class="timeline-company">Leading Point Software</div>
+      <div class="timeline-desc">
+        Building production Multi-RAG platforms with Haystack 2.0 and Qdrant. Conducting research into Vision-Language Models (VLMs) for document understanding. Designing semantic ETL pipelines using Unstructured.io for enterprise-scale document ingestion.
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--purple2);"></div>
+      <div class="timeline-period">2023</div>
+      <div class="timeline-role">Data Management Intern</div>
+      <div class="timeline-company">EHS / Hakeem — Healthcare AI</div>
+      <div class="timeline-desc">
+        Applied deep learning models to healthcare datasets for clinical data classification and anomaly detection. Developed preprocessing pipelines for structured EHR data and collaborated with clinical stakeholders to align model outputs with regulatory standards.
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--amber);"></div>
+      <div class="timeline-period">2022 — 2024</div>
+      <div class="timeline-role">Vice Chair, Youth Innovation Club</div>
+      <div class="timeline-company">Al-Balqa' Applied University</div>
+      <div class="timeline-desc">
+        Led a 40+ member innovation community, organized AI/ML workshops, coordinated national hackathon participation, and mentored junior members in applied data science projects. Driving the club's strategic pivot toward GenAI education.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="awards-inner">
+    <div class="section-header">
+      <span class="section-num">05 //</span>
+      <h2 class="section-title">Awards & Recognition</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="awards-grid">
+      <div class="award-card">
+        <div class="award-icon">🥇</div>
+        <div class="award-title">1st Place — P2M Innovation Competition</div>
+        <div class="award-org">Path to Market / Jordan</div>
+        <div class="award-desc">Won first place for the Sign2Sign bidirectional Arabic Sign Language translation system, recognized for technical innovation, social impact, and commercial viability in assistive technology.</div>
+      </div>
+      <div class="award-card">
+        <div class="award-icon">🚀</div>
+        <div class="award-title">6th Place — NASA Space Apps Challenge</div>
+        <div class="award-org">NASA / Global, 160+ Countries</div>
+        <div class="award-desc">Ranked globally in NASA's premier open innovation hackathon for ML-based exoplanet transit classification, competing against 1,000+ teams with a multi-modal astrophysics pipeline.</div>
+      </div>
+      <div class="award-card">
+        <div class="award-icon">🎓</div>
+        <div class="award-title">B.Sc. Data Science</div>
+        <div class="award-org">Al-Balqa' Applied University</div>
+        <div class="award-desc">Graduated with strong emphasis on statistical modeling, machine learning theory, and applied deep learning — forming the rigorous foundation for advanced AI engineering work.</div>
+      </div>
+      <div class="award-card">
+        <div class="award-icon">⚡</div>
+        <div class="award-title">Vice Chair — Youth Innovation Club</div>
+        <div class="award-org">BAU Innovation Ecosystem</div>
+        <div class="award-desc">Elected leadership role driving university-wide AI literacy initiatives, workshop facilitation, and national competition coordination for 40+ members across engineering and data disciplines.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="contact-title">Let's Build Something Remarkable</h2>
+  <p class="contact-sub">Open to senior AI engineering roles, research collaborations, and consulting on RAG architecture & agentic systems.</p>
+  <div class="contact-links">
+    <a href="mailto:leen@example.com" class="contact-link">📧 Email</a>
+    <a href="https://linkedin.com" class="contact-link">in LinkedIn</a>
+    <a href="https://github.com" class="contact-link">⌥ GitHub</a>
+    <a href="#" class="contact-link">📄 Resume PDF</a>
+  </div>
+</section>
+
+<footer>
+  <span style="color:var(--cyan)">Leen Abdel Halim</span> — AI Engineer & Data Scientist —
+  Built with HTML, CSS, Canvas API &amp; pure conviction. &copy; 2025
+</footer>
+
+<script>
+// ─── PARTICLE CANVAS ───────────────────────────────────────────
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+
+let W, H, particles = [], connections = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initParticles(); });
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r = Math.random() * 1.5 + 0.5;
+    this.alpha = Math.random() * 0.5 + 0.2;
+    this.color = Math.random() > 0.6 ? '#63b3ed' : '#9f7aea';
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > W) this.vx *= -1;
+    if (this.y < 0 || this.y > H) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.color.replace(')', `, ${this.alpha})`).replace('rgb', 'rgba').replace('#63b3ed', `rgba(99,179,237,${this.alpha})`).replace('#9f7aea', `rgba(159,122,234,${this.alpha})`);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  const count = Math.min(Math.floor(W * H / 12000), 90);
+  particles = Array.from({length: count}, () => new Particle());
+}
+initParticles();
+
+let mouse = { x: -9999, y: -9999 };
+document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+function animate() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => p.update());
+
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        const alpha = (1 - dist/120) * 0.15;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(99,179,237,${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+    // Mouse interactions
+    const mx = particles[i].x - mouse.x;
+    const my = particles[i].y - mouse.y;
+    const md = Math.sqrt(mx*mx + my*my);
+    if (md < 100) {
+      const alpha = (1 - md/100) * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(particles[i].x, particles[i].y);
+      ctx.lineTo(mouse.x, mouse.y);
+      ctx.strokeStyle = `rgba(159,122,234,${alpha})`;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+  }
+  particles.forEach(p => p.draw());
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ─── TAGLINE SWITCHER ──────────────────────────────────────────
+const taglines = [
+  `Bridging <span>Data Science Intuition</span> with Production-Grade <span>Agentic AI Systems</span>`,
+  `Engineering <span>Scalable RAG Architectures</span> from Research Vector to <span>Enterprise Deployment</span>`,
+  `Translating Human Gesture into <span>Machine Understanding</span> — One Sign at a <span>Time</span>`
+];
+
+const display = document.getElementById('tagline-text');
+const tabs = document.querySelectorAll('.tagline-tab');
+let current = 0;
+
+function setTagline(idx) {
+  display.style.opacity = 0;
+  setTimeout(() => {
+    display.innerHTML = taglines[idx];
+    display.style.opacity = 1;
+  }, 200);
+  tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+  current = idx;
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => setTagline(parseInt(tab.dataset.idx)));
+});
+
+setTagline(0);
+
+// Auto-rotate taglines
+setInterval(() => {
+  setTagline((current + 1) % taglines.length);
+}, 4000);
+</script>
+</body>
+</html>
