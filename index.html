@@ -751,6 +751,8 @@
     .nav-links { display: none; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
   }
+
+ 
 </style>
 </head>
 <body>
@@ -1058,7 +1060,95 @@
         <span class="tech-chip">Python</span>
       </div>
     </div>
-
+   
+   <div class="project-card">
+    
+     <!-- Header -->
+     <div class="project-header">
+       <div class="project-title-group">
+         <div class="project-num">PROJECT_04</div>
+         <div class="project-title">DeepFake Voice Detection</div>
+         <div class="project-badges">
+           <span class="badge badge-audio">🎙 Audio AI</span>
+           <span class="badge badge-dl">Deep Learning</span>
+           <span class="badge badge-prod">Binary Classifier</span>
+         </div>
+       </div>
+     </div>
+    
+     <!-- Animated waveform -->
+     <div class="waveform-bar" aria-hidden="true">
+       <script>
+         // bars generated inline so no extra file needed
+         const heights = [10,18,26,32,28,20,14,22,30,28,16,12,20,28,32,24,18,14,22,30,28,20,16,12,24,32,26,18,14,20,28,30,22,16,12,18,26,32,24,20];
+         document.write(heights.map((h, i) =>
+           `<div class="bar" style="height:${h}px;animation-delay:${(i * 0.05).toFixed(2)}s"></div>`
+         ).join(''));
+       </script>
+     </div>
+    
+     <!-- STAR breakdown -->
+     <div class="star-grid">
+       <div class="star-item">
+         <div class="star-label">Situation</div>
+         <div class="star-text">
+           AI-generated voice cloning tools can now produce <strong>near-perfect imitations</strong> of real speakers — creating risks of misinformation, fraud, and identity deception at scale.
+         </div>
+       </div>
+       <div class="star-item">
+         <div class="star-label">Task</div>
+         <div class="star-text">
+           Build a binary audio classifier that reliably distinguishes <strong>real human speech</strong> from <strong>AI-synthesized deepfake audio</strong> using acoustic feature extraction.
+         </div>
+       </div>
+       <div class="star-item">
+         <div class="star-label">Action</div>
+         <div class="star-text">
+           Extracted <strong>40 MFCC coefficients</strong> per audio file via Librosa. Handled class imbalance with RandomOverSampler. Trained a <strong>4-layer Dense Neural Network</strong> (128 → 256 → 128 → softmax) with Dropout regularization and EarlyStopping on 300 epochs.
+         </div>
+       </div>
+       <div class="star-item">
+         <div class="star-label">Result</div>
+         <div class="star-text">
+           Model correctly classified real vs. fake audio on unseen demonstration files — including celebrity voice clones (Linus → Musk). Validated on the <strong>Deep Voice Kaggle dataset</strong> across multiple speakers.
+         </div>
+       </div>
+     </div>
+    
+     <!-- Accuracy + key features -->
+     <div class="accuracy-row">
+       <span class="accuracy-label">Model Performance:</span>
+       <div class="accuracy-pill">
+         <div class="accuracy-dot"></div>
+         <span class="accuracy-val">Binary Classification · REAL / FAKE</span>
+       </div>
+       <div class="accuracy-pill" style="border-color:rgba(99,179,237,0.25);background:rgba(99,179,237,0.06);">
+         <div class="accuracy-dot" style="background:var(--cyan);"></div>
+         <span class="accuracy-val" style="color:var(--cyan);">40 MFCCs · 300 Epochs</span>
+       </div>
+     </div>
+    
+     <div class="feature-row">
+       <div class="feature-pill"><div class="dot" style="background:var(--cyan)"></div>Spectrogram & Chromagram Visualization</div>
+       <div class="feature-pill"><div class="dot" style="background:var(--purple2)"></div>Class Imbalance Handling (RandomOverSampler)</div>
+       <div class="feature-pill"><div class="dot" style="background:var(--green)"></div>EarlyStopping to Prevent Overfitting</div>
+       <div class="feature-pill"><div class="dot" style="background:var(--amber)"></div>Real-time Inference via detect_fake()</div>
+     </div>
+    
+     <!-- Tech stack -->
+     <div class="project-tech">
+       <span class="tech-chip">Python</span>
+       <span class="tech-chip">TensorFlow / Keras</span>
+       <span class="tech-chip">Librosa</span>
+       <span class="tech-chip">MFCC Features</span>
+       <span class="tech-chip">NumPy · Pandas</span>
+       <span class="tech-chip">Imbalanced-Learn</span>
+       <span class="tech-chip">Matplotlib · Seaborn</span>
+       <span class="tech-chip">Resampy</span>
+       <span class="tech-chip">Kaggle Deep Voice Dataset</span>
+     </div>
+ 
+</div>
   </div>
 </section>
 
